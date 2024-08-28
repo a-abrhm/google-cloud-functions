@@ -1,0 +1,16 @@
+{
+  "name": "cloud_function_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/firestore": "^7.9.0",
+    "@google-cloud/functions-framework": "^3.4.2"
+  }
+}
