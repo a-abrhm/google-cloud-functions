@@ -43,10 +43,9 @@ jobs:
     needs: 'find_changed_functions'
     runs-on: 'ubuntu-latest'
     strategy:
-      matrix:
-        function_details: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
 
-    uses: a-abrhm/google-cloud-functions/.github/workflows/deploy-function-to-cloudrun.yml@main
+    uses: ./.github/workflows/deploy-function-to-cloudrun.yml
     with:
-      function_dir: ${{ matrix.function_details.function_dir }}
-      function_name: ${{ matrix.function_details.function_name }}
+      function_dir: ${{ matrix.function_dir }}
+      function_name: ${{ matrix.function_name }}
