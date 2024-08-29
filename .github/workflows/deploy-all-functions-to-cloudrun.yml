@@ -35,7 +35,7 @@ jobs:
           function_matrix=$(echo '${{ steps.changed.outputs.changed_dirs }}' | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({"function_name": ., "function_dir": ("./cloud_functions/" + .)})')
           {
             echo 'matrix<<EOF'
-            echo "$function_matrix"
+            echo "{\"include\": $function_matrix}"
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
