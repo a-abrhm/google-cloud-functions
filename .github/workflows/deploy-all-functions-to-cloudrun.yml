@@ -21,6 +21,7 @@ jobs:
         run: |
           echo "Changed functions:"
           CHANGED_DIRS=$(git diff --name-only HEAD^ HEAD | grep '^cloud_functions/' | cut -d'/' -f2 | uniq)
+          echo "$CHANGED_DIRS"
           echo "changed_dirs=$CHANGED_DIRS" >> $GITHUB_OUTPUT
 
       - id: 'set-matrix'
