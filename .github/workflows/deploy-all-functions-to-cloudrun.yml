@@ -46,9 +46,7 @@ jobs:
       matrix:
         function_details: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
 
-    steps:
-      - name: Deploy Single Function
-        uses: a-abrhm/google-cloud-functions/.github/workflows/deploy-function-to-cloudrun.yml@main
-        with:
-          function_dir: ${{ matrix.function_details.function_dir }}
-          function_name: ${{ matrix.function_details.function_name }}
+    uses: a-abrhm/google-cloud-functions/.github/workflows/deploy-function-to-cloudrun.yml@main
+    with:
+      function_dir: ${{ matrix.function_details.function_dir }}
+      function_name: ${{ matrix.function_details.function_name }}
