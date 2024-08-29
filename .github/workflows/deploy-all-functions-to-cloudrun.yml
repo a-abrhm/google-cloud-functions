@@ -43,7 +43,10 @@ jobs:
     needs: 'find_changed_functions'
     runs-on: 'ubuntu-latest'
     strategy:
-      matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
+      # matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
+      matrix:
+        function_dir: ['cloud_functions/cloud_function_1', 'cloud_functions/cloud_function_2']
+        function_name: ['cloud_function_1', 'cloud_function_2']
 
     uses: ./.github/workflows/deploy-function-to-cloudrun.yml
     with:
