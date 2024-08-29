@@ -20,5 +20,6 @@ steps:
   - --trigger-http
   - --runtime
   - nodejs20
+logsBucket: 'gs://gcfp-build-logs'
 options:
   logging: CLOUD_LOGGING_ONLY
