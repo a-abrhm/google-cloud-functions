@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Deploy Single Function
-        uses: ./.github/workflows/deploy-function-to-cloudrun.yml
+        uses: a-abrhm/google-cloud-functions/.github/workflows/deploy-function-to-cloudrun.yml
         with:
           function_dir: ${{ matrix.function_details.function_dir }}
           function_name: ${{ matrix.function_details.function_name }}
