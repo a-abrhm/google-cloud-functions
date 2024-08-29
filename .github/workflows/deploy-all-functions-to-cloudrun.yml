@@ -1,0 +1,43 @@
+name: 'Deploy Changed Functions to Cloud Run'
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'cloud_functions/**'
+
+jobs:
+  find_changed_functions:
+    runs-on: 'ubuntu-latest'
+    outputs:
+      matrix: '${{ steps.set-matrix.outputs.matrix }}'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - name: 'Get Changed Functions'
+        id: 'changed'
+        run: |
+          echo "Changed functions:"
+          CHANGED_DIRS=$(git diff --name-only HEAD~1 HEAD | grep '^cloud_functions/' | cut -d'/' -f2 | uniq)
+          echo "$CHANGED_DIRS"
+          echo "::set-output name=changed_dirs::$CHANGED_DIRS"
+
+      - id: 'set-matrix'
+        run: |
+          function_matrix=$(echo '${{ steps.changed.outputs.changed_dirs }}' | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({"function_name": ., "function_dir": "./cloud_functions/" + .})')
+          echo "::set-output name=matrix::$function_matrix"
+
+  deploy:
+    needs: 'find_changed_functions'
+    runs-on: 'ubuntu-latest'
+    strategy:
+      matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
+
+    steps:
+      - name: Deploy Single Function
+        uses: ./.github/workflows/deploy-function-to-cloudrun.yml
+        with:
+          function_dir: ${{ matrix.function_dir }}
+          function_name: ${{ matrix.function_name }}
