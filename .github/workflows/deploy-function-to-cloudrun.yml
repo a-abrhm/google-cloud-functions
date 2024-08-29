@@ -64,10 +64,10 @@ jobs:
             CPU=$(jq -r '.cpu' $CONFIG_FILE)
             TIMEOUT=$(jq -r '.timeout' $CONFIG_FILE)
             RUNTIME=$(jq -r '.runtime' $CONFIG_FILE)
-            echo "::set-output name=memory::$MEMORY"
-            echo "::set-output name=cpu::$CPU"
-            echo "::set-output name=timeout::$TIMEOUT"
-            echo "::set-output name=runtime::$RUNTIME"
+            echo "memory=$MEMORY" >> $GITHUB_OUTPUT
+            echo "cpu=$CPU" >> $GITHUB_OUTPUT
+            echo "timeout=$TIMEOUT" >> $GITHUB_OUTPUT
+            echo "runtime=$RUNTIME" >> $GITHUB_OUTPUT
           else
             echo "Configuration file $CONFIG_FILE not found."
             exit 1
