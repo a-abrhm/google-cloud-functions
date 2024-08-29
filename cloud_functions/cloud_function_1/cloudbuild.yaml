@@ -18,7 +18,9 @@ steps:
   - '--region'
   - 'europe-west2'
   - --trigger-http
-  - --runtime=nodejs20
+  - --runtime
+  - nodejs20
+  - --service_account
+  - '174261777269@cloudbuild.gserviceaccount.com'
 options:
   logging: CLOUD_LOGGING_ONLY
-  service_account: "174261777269@cloudbuild.gserviceaccount.com"
