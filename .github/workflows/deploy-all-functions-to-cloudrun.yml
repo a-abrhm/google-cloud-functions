@@ -43,11 +43,12 @@ jobs:
     needs: 'find_changed_functions'
     runs-on: 'ubuntu-latest'
     strategy:
-      matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
+      matrix:
+        function_details: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
 
     steps:
       - name: Deploy Single Function
         uses: ./.github/workflows/deploy-function-to-cloudrun.yml
         with:
-          function_dir: ${{ matrix.function_dir }}
-          function_name: ${{ matrix.function_name }}
+          function_dir: ${{ matrix.function_details.function_dir }}
+          function_name: ${{ matrix.function_details.function_name }}
