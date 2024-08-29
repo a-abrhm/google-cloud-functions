@@ -1,9 +1,9 @@
-name: 'Deploy Function to Cloud Run from Source'
+name: 'Deploy Function to Cloud Run from Source 2'
 
 on:
   push:
     branches:
-      - '"main"'
+      - 'main'
     paths:
       - 'cloud_functions/**'
 
