@@ -20,14 +20,13 @@ jobs:
         id: 'changed'
         run: |
           echo "Changed functions:"
-          CHANGED_DIRS=$(git diff --name-only HEAD~1 HEAD | grep '^cloud_functions/' | cut -d'/' -f2 | uniq)
-          echo "$CHANGED_DIRS"
-          echo "::set-output name=changed_dirs::$CHANGED_DIRS"
+          CHANGED_DIRS=$(git diff --name-only HEAD^ HEAD | grep '^cloud_functions/' | cut -d'/' -f2 | uniq)
+          echo "changed_dirs=$CHANGED_DIRS" >> $GITHUB_OUTPUT
 
       - id: 'set-matrix'
         run: |
           function_matrix=$(echo '${{ steps.changed.outputs.changed_dirs }}' | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({"function_name": ., "function_dir": "./cloud_functions/" + .})')
-          echo "::set-output name=matrix::$function_matrix"
+          echo "matrix=$function_matrix" >> $GITHUB_OUTPUT
 
   deploy:
     needs: 'find_changed_functions'
