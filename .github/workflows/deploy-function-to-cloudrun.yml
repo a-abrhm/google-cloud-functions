@@ -55,6 +55,24 @@ jobs:
       - name: 'Checkout'
         uses: 'actions/checkout@v4'
 
+      - name: 'Read Configuration'
+        id: 'read-config'
+        run: |
+          CONFIG_FILE="${{ inputs.function_dir }}/config.json"
+          if [ -f "$CONFIG_FILE" ]; then
+            MEMORY=$(jq -r '.memory' $CONFIG_FILE)
+            CPU=$(jq -r '.cpu' $CONFIG_FILE)
+            TIMEOUT=$(jq -r '.timeout' $CONFIG_FILE)
+            RUNTIME=$(jq -r '.runtime' $CONFIG_FILE)
+            echo "::set-output name=memory::$MEMORY"
+            echo "::set-output name=cpu::$CPU"
+            echo "::set-output name=timeout::$TIMEOUT"
+            echo "::set-output name=runtime::$RUNTIME"
+          else
+            echo "Configuration file $CONFIG_FILE not found."
+            exit 1
+          fi
+
       # Configure Workload Identity Federation and generate an access token.
       #
       # See https://github.com/google-github-actions/auth for more options,
@@ -72,6 +90,10 @@ jobs:
           region: '${{ env.REGION }}'
           # NOTE: If using a different source folder, update the image name below:
           source: '${{ inputs.function_dir }}'
+          memory: '${{ steps.read-config.outputs.memory }}'
+          cpu: '${{ steps.read-config.outputs.cpu }}'
+          timeout: '${{ steps.read-config.outputs.timeout }}'
+          runtime: '${{ steps.read-config.outputs.runtime }}'
 
       # If required, use the Cloud Run URL output in later steps
       - name: 'Show output'
