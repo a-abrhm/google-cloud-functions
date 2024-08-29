@@ -20,7 +20,5 @@ steps:
   - --trigger-http
   - --runtime
   - nodejs20
-  - --service_account
-  - '174261777269@cloudbuild.gserviceaccount.com'
 options:
   logging: CLOUD_LOGGING_ONLY
