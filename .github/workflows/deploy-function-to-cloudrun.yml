@@ -35,13 +35,14 @@ on:
       function_dir:
         required: true
         type: string
-      function_name:
-        required: true
-        type: string
+      # function_name:
+      #   required: true
+      #   type: string
 
 env:
   PROJECT_ID: 'copper-oven-434008-v1' # TODO: update to your Google Cloud project ID
   REGION: 'europe-west2' # TODO: update to your region
+  FUNCTION_NAME: $(basename ${{ inputs.function_dir }})
 
 jobs:
   deploy:
@@ -86,7 +87,8 @@ jobs:
       - name: 'Deploy to Cloud Run'
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
-          service: '${{ inputs.function_name }}'
+          # service: '${{ inputs.function_name }}'
+          service: '${{ env.FUNCTION_NAME }}'
           region: '${{ env.REGION }}'
           # NOTE: If using a different source folder, update the image name below:
           source: '${{ inputs.function_dir }}'
