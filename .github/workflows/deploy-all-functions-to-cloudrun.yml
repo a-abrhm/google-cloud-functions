@@ -33,7 +33,11 @@ jobs:
       - id: 'set-matrix'
         run: |
           function_matrix=$(echo '${{ steps.changed.outputs.changed_dirs }}' | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({"function_name": ., "function_dir": ("./cloud_functions/" + .)})')
-          echo "matrix=$function_matrix" >> $GITHUB_OUTPUT
+          {
+            echo 'matrix<<EOF'
+            echo "$function_matrix"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
 
   deploy:
     needs: 'find_changed_functions'
