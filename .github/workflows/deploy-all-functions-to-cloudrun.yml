@@ -46,9 +46,9 @@ jobs:
       # matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
       matrix:
         function_dir: ['cloud_functions/cloud_function_1', 'cloud_functions/cloud_function_2']
-        function_name: ['cloud_function_1', 'cloud_function_2']
+        # function_name: ['cloud_function_1', 'cloud_function_2']
 
     uses: ./.github/workflows/deploy-function-to-cloudrun.yml
     with:
       function_dir: ${{ matrix.function_dir }}
-      function_name: ${{ matrix.function_name }}
+      # function_name: ${{ matrix.function_name }}
