@@ -3,8 +3,8 @@ const { Firestore } = require('@google-cloud/firestore');
 
 const firestore = new Firestore();
 
-functions.http('cloudFunction1', async (req, res) => {
-    console.log(`Starting cloudFunction1.`);
+functions.http('cloud_function_1', async (req, res) => {
+    console.log(`Starting cloudFunction2.`);
 
     // get the region record
     const regionRecord = await firestore.collection('regions').where('map_level', '==', 'Level1').get();
