@@ -58,10 +58,6 @@ jobs:
           region: '${{ env.REGION }}'
           # NOTE: If using a different source folder, update the image name below:
           source: '/cloud_functions/cloud_function_1'
-          memory: '${{ steps.read-config.outputs.memory }}'
-          cpu: '${{ steps.read-config.outputs.cpu }}'
-          timeout: '${{ steps.read-config.outputs.timeout }}'
-          runtime: '${{ steps.read-config.outputs.runtime }}'
 
       # If required, use the Cloud Run URL output in later steps
       - name: 'Show output'
