@@ -48,5 +48,6 @@ jobs:
     with:
       # matrix: ${{ needs.find_changed_functions.outputs.matrix }}
       version: '10'
+    secrets: inherit
     #   function_dir: ${{ matrix.function_dir }}
     #   function_name: ${{ matrix.function_name }}
