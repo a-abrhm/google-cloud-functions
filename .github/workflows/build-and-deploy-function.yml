@@ -65,16 +65,16 @@ jobs:
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
           project_id: '${{ env.PROJECT_ID }}'
 
-      # Check if the repository exists in the Artifact Registry
-      - name: 'Create Artifact Registry Repository if not exists'
-        run: |-
-          echo "Creating Artifact Registry repository if it does not exist"
-          gcloud artifacts repositories describe ${{ env.SERVICE }} \
-            --location=${{ env.REGION }} || \
-          gcloud artifacts repositories create ${{ env.SERVICE }} \
-            --repository-format=docker \
-            --location=${{ env.REGION }} \
-            --description="Docker repository for ${{ env.SERVICE }}"
+      # # Check if the repository exists in the Artifact Registry
+      # - name: 'Create Artifact Registry Repository if not exists'
+      #   run: |-
+      #     echo "Creating Artifact Registry repository if it does not exist"
+      #     gcloud artifacts repositories describe ${{ env.SERVICE }} \
+      #       --location=${{ env.REGION }} || \
+      #     gcloud artifacts repositories create ${{ env.SERVICE }} \
+      #       --repository-format=docker \
+      #       --location=${{ env.REGION }} \
+      #       --description="Docker repository for ${{ env.SERVICE }}"
 
       # BEGIN - Docker auth and build
       #
