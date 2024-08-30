@@ -65,6 +65,15 @@ jobs:
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
           project_id: '${{ env.PROJECT_ID }}'
 
+      # Check if the repository exists in the Artifact Registry
+      - name: 'Check Repository Existence'
+        run: |
+          REPO_EXISTS=$(gcloud artifactregistry repositories describe "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}" --quiet)
+          if [[ $? -ne 0 ]]; then
+            echo "Repository does not exist. Creating..."
+            gcloud artifactregistry repositories create "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}" --location ${{ env.REGION }}
+          fi
+
       # BEGIN - Docker auth and build
       #
       # If you already have a container image, you can omit these steps.
