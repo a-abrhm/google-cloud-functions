@@ -66,13 +66,15 @@ jobs:
           project_id: '${{ env.PROJECT_ID }}'
 
       # Check if the repository exists in the Artifact Registry
-      - name: 'Check Repository Existence'
-        run: |
-          REPO_EXISTS=$(gcloud artifacts repositories describe "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}" --quiet)
-          if [[ $? -ne 0 ]]; then
-            echo "Repository does not exist. Creating..."
-            gcloud artifacts repositories create "${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}" --location ${{ env.REGION }}
-          fi
+      - name: 'Create Artifact Registry Repository if not exists'
+        run: |-
+          echo "Creating Artifact Registry repository if it does not exist"
+          gcloud artifacts repositories describe ${{ env.SERVICE }} \
+            --location=${{ env.REGION }} || \
+          gcloud artifacts repositories create ${{ env.SERVICE }} \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="Docker repository for ${{ env.SERVICE }}"
 
       # BEGIN - Docker auth and build
       #
