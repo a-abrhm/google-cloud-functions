@@ -43,6 +43,7 @@ jobs:
     needs: 'find_changed_functions'
     uses: ./.github/workflows/build-and-deploy-function.yml
     with:
-      matrix: ${{ needs.find_changed_functions.outputs.matrix }}
+      # matrix: ${{ needs.find_changed_functions.outputs.matrix }}
+      version: '10'
     #   function_dir: ${{ matrix.function_dir }}
     #   function_name: ${{ matrix.function_name }}
