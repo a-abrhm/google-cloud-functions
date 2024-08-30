@@ -49,6 +49,10 @@ on:
       #   required: true
       #   type: string
 
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
 env:
   PROJECT_ID: 'copper-oven-434008-v1' # TODO: update to your Google Cloud project ID
   REGION: 'europe-west2' # TODO: update to your region
