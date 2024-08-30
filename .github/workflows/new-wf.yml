@@ -54,7 +54,7 @@ jobs:
       - name: 'Deploy to Cloud Run'
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
-          service: 'cloud_function_1'
+          service: 'cloud-function-1'
           region: '${{ env.REGION }}'
           # NOTE: If using a different source folder, update the image name below:
           source: '/cloud_functions/cloud_function_1'
