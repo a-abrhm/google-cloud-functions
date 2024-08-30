@@ -63,8 +63,9 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2' # google-github-actions/auth@v2
         with:
-          workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
-          project_id: '${{ env.PROJECT_ID }}'
+          # workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
+          # project_id: '${{ env.PROJECT_ID }}'
+          credentials_json: "${{ secrets.SERVICE_ACCOUNT_CREDS }}"
 
       # # Check if the repository exists in the Artifact Registry
       # - name: 'Create Artifact Registry Repository if not exists'
