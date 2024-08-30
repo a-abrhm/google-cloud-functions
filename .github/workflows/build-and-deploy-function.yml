@@ -104,6 +104,7 @@ jobs:
 
           image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.SERVICE }}:${{ github.sha }}'
           flags: '--cpu=1 --memory=2GiB --timeout=3600'
+          service_account: "cloud-run-deploy@copper-oven-434008-v1.iam.gserviceaccount.com"
       # If required, use the Cloud Run URL output in later steps
       - name: 'Show output'
         run: |2-
