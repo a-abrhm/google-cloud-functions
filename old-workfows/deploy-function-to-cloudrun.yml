@@ -58,7 +58,7 @@ jobs:
       - name: 'Read Configuration'
         id: 'read-config'
         run: |
-          CONFIG_FILE="${{ inputs.function_dir }}/config.json"
+          CONFIG_FILE="${{ inputs.function_dir }}config.json"
           if [ -f "$CONFIG_FILE" ]; then
             MEMORY=$(jq -r '.memory' $CONFIG_FILE)
             CPU=$(jq -r '.cpu' $CONFIG_FILE)
@@ -90,10 +90,10 @@ jobs:
           region: '${{ env.REGION }}'
           # NOTE: If using a different source folder, update the image name below:
           source: '${{ inputs.function_dir }}'
-          memory: '${{ steps.read-config.outputs.memory }}'
-          cpu: '${{ steps.read-config.outputs.cpu }}'
-          timeout: '${{ steps.read-config.outputs.timeout }}'
-          runtime: '${{ steps.read-config.outputs.runtime }}'
+          # memory: '${{ steps.read-config.outputs.memory }}'
+          # cpu: '${{ steps.read-config.outputs.cpu }}'
+          # timeout: '${{ steps.read-config.outputs.timeout }}'
+          # runtime: '${{ steps.read-config.outputs.runtime }}'
 
       # If required, use the Cloud Run URL output in later steps
       - name: 'Show output'

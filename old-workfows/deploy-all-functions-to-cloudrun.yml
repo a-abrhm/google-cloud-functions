@@ -32,20 +32,20 @@ jobs:
 
       - id: 'set-matrix'
         run: |
-          function_matrix=$(echo '${{ steps.changed.outputs.changed_dirs }}' | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({"function_name": ., "function_dir": ("./cloud_functions/" + .)})')
+          function_matrix=$(echo '${{ steps.changed.outputs.changed_dirs }}' | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({"function_name": ., "function_dir": ("./cloud_functions/" + . + "/")})')
           {
             echo 'matrix<<EOF'
             echo "{\"include\": $function_matrix}"
             echo 'EOF'
           } >> $GITHUB_OUTPUT
 
-  # deploy:
-  #   needs: 'find_changed_functions'
-  #   runs-on: 'ubuntu-latest'
-  #   strategy:
-  #     matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
+  deploy:
+    needs: 'find_changed_functions'
+    runs-on: 'ubuntu-latest'
+    strategy:
+      matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
 
-  #   uses: ./.github/workflows/deploy-function-to-cloudrun.yml
-  #   with:
-  #     function_dir: ${{ matrix.function_dir }}
-  #     function_name: ${{ matrix.function_name }}
+    uses: ./.github/workflows/deploy-function-to-cloudrun.yml
+    with:
+      function_dir: ${{ matrix.function_dir }}
+      function_name: ${{ matrix.function_name }}
