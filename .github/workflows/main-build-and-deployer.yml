@@ -41,11 +41,8 @@ jobs:
 
   deploy:
     needs: 'find_changed_functions'
-    runs-on: 'ubuntu-latest'
-    # strategy:
-    #   matrix: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
-
     uses: ./.github/workflows/build-and-deploy-function.yml
-    # with:
+    with:
+      matrix: ${{ needs.find_changed_functions.outputs.matrix }}
     #   function_dir: ${{ matrix.function_dir }}
     #   function_name: ${{ matrix.function_name }}
