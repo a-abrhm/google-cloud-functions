@@ -38,10 +38,10 @@ name: 'Build and Deploy to Cloud Run'
 
 on:
   workflow_call:
-    inputs:
-      version:
-        required: false
-        type: string
+    # inputs:
+    #   version:
+    #     required: false
+    #     type: string
       # function_dir:
       #   required: true
       #   type: string
