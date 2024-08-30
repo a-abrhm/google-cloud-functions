@@ -29,12 +29,22 @@
 
 name: 'Build and Deploy to Cloud Run'
 
+# on:
+#   push:
+#     branches:
+#       - 'main'
+#     paths:
+#       - 'cloud_functions/**'
+
 on:
-  push:
-    branches:
-      - 'main'
-    paths:
-      - 'cloud_functions/**'
+  workflow_call:
+    inputs:
+      function_dir:
+        required: true
+        type: string
+      function_name:
+        required: true
+        type: string
 
 env:
   PROJECT_ID: 'copper-oven-434008-v1' # TODO: update to your Google Cloud project ID
