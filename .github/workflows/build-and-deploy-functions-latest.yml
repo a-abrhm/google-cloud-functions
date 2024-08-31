@@ -60,6 +60,11 @@ jobs:
           sparse-checkout: |
             "cloud_functions/${{ matrix.service }}"
 
+      - name: 'List Files in Directory'
+        run: |
+          echo "Listing files in the build context:"
+          ls -la
+
       # Configure Workload Identity Federation and generate an access token.
       #
       # See https://github.com/google-github-actions/auth for more options,
