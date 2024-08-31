@@ -1,0 +1,107 @@
+name: 'Build and Deploy Changed Functions to Cloud Run'
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'cloud_functions/**'
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
+env:
+  PROJECT_ID: 'copper-oven-434008-v1' # TODO: update to your Google Cloud project ID
+  REGION: 'europe-west2' # TODO: update to your region
+  # WORKLOAD_IDENTITY_PROVIDER: 'projects/538933477149/locations/global/workloadIdentityPools/github/providers/my-repo' # TODO: update to your workload identity provider
+  GAR_REPO: 'cloud-functions' # TODO: update to your artifact registry repository name
+
+jobs:
+  find_changed_functions:
+    runs-on: 'ubuntu-latest'
+    outputs:
+      matrix: '${{ steps.set-matrix.outputs.matrix }}'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+        with:
+          fetch-depth: 2
+
+      - name: 'Get Changed Functions'
+        id: 'changed'
+        run: |
+          echo "Changed functions:"
+          CHANGED_FUNCTIONS=$(git diff --name-only HEAD^ HEAD | grep '^cloud_functions/' | cut -d'/' -f2 | uniq)
+          echo "$CHANGED_FUNCTIONS"
+          {
+            echo 'changed_functions<<EOF'
+            echo "$CHANGED_FUNCTIONS"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+
+      - id: 'set-matrix'
+        run: |
+          function_matrix=$(echo '${{ steps.changed.outputs.changed_functions }}' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "matrix=${function_matrix}" >> $GITHUB_OUTPUT
+
+  build-and-deploy:
+    needs: 'find_changed_functions'
+    runs-on: 'ubuntu-latest'
+    strategy:
+      matrix:
+        service: ${{ fromJson(needs.find_changed_functions.outputs.matrix) }}
+        fail-fast: false
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+        with:
+          sparse-checkout: |
+            "cloud_functions/${{ matrix.service }}"
+
+      # Configure Workload Identity Federation and generate an access token.
+      #
+      # See https://github.com/google-github-actions/auth for more options,
+      # including authenticating via a JSON credentials file.
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          # workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
+          # project_id: '${{ env.PROJECT_ID }}'
+          credentials_json: "${{ secrets.SERVICE_ACCOUNT_CREDS }}"
+
+      # BEGIN - Docker auth and build
+
+      - name: 'Docker Auth'
+        # uses: 'docker/login-action@v3'
+        # with:
+        #   username: 'oauth2accesstoken'
+        #   password: '${{ steps.auth.outputs.auth_token }}'
+        #   registry: '${{ env.REGION }}-docker.pkg.dev'
+        run: |-
+          gcloud auth configure-docker "${{ env.REGION }}-docker.pkg.dev"
+
+      - name: 'Build and Push Container'
+        run: |-
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ matrix.service }}:${{ github.sha }}"
+          docker build --tag "${DOCKER_TAG}" ./cloud_functions/${{ matrix.service }}
+          docker push "${DOCKER_TAG}"
+      - name: 'Deploy to Cloud Run'
+
+      # END - Docker auth and build
+
+      name: 'Deploy to Cloud Run'
+      uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: '${{ matrix.service }}'
+          region: '${{ env.REGION }}'
+          # NOTE: If using a pre-built image, update the image name below:
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ matrix.service }}:${{ github.sha }}'
+          flags: '--cpu=1 --memory=2G --timeout=3600 --allow-unauthenticated --execution-environment=gen2 --service-account=cloud-run-deploy@copper-oven-434008-v1.iam.gserviceaccount.com'
+      
+      - name: 'Show Deployed Service URL'
+        run: |
+          URL=$(gcloud run services describe ${{ matrix.service }} --region=${{ env.REGION}} --format="value(status.url)")
+          echo "Service ${{ matrix.service }} deployed at $URL"
