@@ -58,7 +58,7 @@ jobs:
         uses: 'actions/checkout@v4'
         with:
           sparse-checkout: |
-            "cloud_functions/${{ matrix.service }}"
+            cloud_functions/${{ matrix.service }}
 
       - name: 'List Files in Directory'
         run: |
