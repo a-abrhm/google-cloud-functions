@@ -1,7 +1,6 @@
 {
   "name": "cloud-function-1",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "npx functions-framework --target=$npm_package_name"
@@ -15,5 +14,6 @@
   },
   "engines": {
     "node": "20"
-  }
+  },
+  "description": ""
 }
