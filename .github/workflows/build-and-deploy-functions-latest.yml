@@ -63,7 +63,7 @@ jobs:
       - name: 'List Files in Directory'
         run: |
           echo "Listing files in the build context:"
-          ls -la
+          ls -la cloud_functions/${{ matrix.service }}
 
       # Configure Workload Identity Federation and generate an access token.
       #
@@ -91,7 +91,7 @@ jobs:
       - name: 'Build and Push Container'
         run: |-
           DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ matrix.service }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" .
+          docker build --tag "${DOCKER_TAG}" ./cloud_functions/${{ matrix.service }}
           docker push "${DOCKER_TAG}"
 
       # END - Docker auth and build
