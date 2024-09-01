@@ -20,4 +20,4 @@ def cloudFunction2(request):
         name = request_args['name']
     else:
         name = 'World'
-    return 'Hello theref {}!'.format(name)
+    return 'Hello there {}!'.format(name)
