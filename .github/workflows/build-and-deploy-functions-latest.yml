@@ -75,6 +75,8 @@ jobs:
           else
             echo "ALLOW_AUTH_FLAG=" >> $GITHUB_ENV
           fi
+          LOWERCASE_SERVICE=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
+          echo "LOWERCASE_SERVICE=$LOWERCASE_SERVICE" >> $GITHUB_ENV
 
       # Configure Workload Identity Federation and generate an access token.
       #
@@ -101,7 +103,7 @@ jobs:
 
       - name: 'Build and Push Container'
         run: |-
-          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ matrix.service }}:${{ github.sha }}"
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.LOWERCASE_SERVICE }}:${{ github.sha }}"
           docker build --tag "${DOCKER_TAG}" ./cloud_functions/${{ matrix.service }}
           docker push "${DOCKER_TAG}"
 
@@ -113,7 +115,7 @@ jobs:
           service: '${{ matrix.service }}'
           region: '${{ env.REGION }}'
           # NOTE: If using a pre-built image, update the image name below:
-          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ matrix.service }}:${{ github.sha }}'
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ env.LOWERCASE_SERVICE }}:${{ github.sha }}'
           flags: >
             --cpu=${{ env.cpu }}
             --memory=${{ env.memory }}
