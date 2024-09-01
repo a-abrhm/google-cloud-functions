@@ -119,9 +119,9 @@ jobs:
           flags: >
             --cpu=${{ env.cpu }}
             --memory=${{ env.memory }}
-            --timeout=$${{ env.timeout }}
+            --timeout=${{ env.timeout }}
             --execution-environment=${{ env.execution_environment }}
-            $${{ env.ALLOW_AUTH_FLAG }}
+            ${{ env.ALLOW_AUTH_FLAG }}
             --service-account=${{ env.SERVICE_ACCOUNT_EMAIL }}
       
       - name: 'Show Deployed Service URL'
