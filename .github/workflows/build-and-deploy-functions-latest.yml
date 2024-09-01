@@ -68,9 +68,13 @@ jobs:
           echo "cpu=$(echo $CONFIG | jq -r '.cpu')" >> $GITHUB_ENV
           echo "memory=$(echo $CONFIG | jq -r '.memory')" >> $GITHUB_ENV
           echo "timeout=$(echo $CONFIG | jq -r '.timeout')" >> $GITHUB_ENV
-          echo "allow_unauthenticated=$(echo $CONFIG | jq -r '.allowUnauthenticated')" >> $GITHUB_ENV
           echo "execution_environment=$(echo $CONFIG | jq -r '.executionEnvironment')" >> $GITHUB_ENV
           echo "service_account=$(echo $CONFIG | jq -r '.serviceAccount')" >> $GITHUB_ENV
+          if [ "$(echo $CONFIG | jq -r '.allowUnauthenticated')" == "true" ]; then
+            echo "ALLOW_AUTH_FLAG=--allow-unauthenticated" >> $GITHUB_ENV
+          else
+            echo "ALLOW_AUTH_FLAG=" >> $GITHUB_ENV
+          fi
 
       # Configure Workload Identity Federation and generate an access token.
       #
@@ -114,8 +118,8 @@ jobs:
             --cpu=${{ env.cpu }}
             --memory=${{ env.memory }}
             --timeout=$${{ env.timeout }}
-            ${{ env.allow_unauthenticated == 'true' && echo '--allow-unauthenticated' || echo '' }}
             --execution-environment=${{ env.execution_environment }}
+            $${{ env.ALLOW_AUTH_FLAG }}
             --service-account=${{ env.SERVICE_ACCOUNT_EMAIL }}
       
       - name: 'Show Deployed Service URL'
