@@ -1,7 +1,0 @@
-{
-    "memory": "1GiB",
-    "cpu": "0.583",
-    "timeout": "3600s",
-    "runtime": "python311"
-  }
-  

@@ -21,4 +21,4 @@ COPY main.py .
 EXPOSE 8080
 
 # Run the Functions Framework server
-CMD ["functions-framework", "--target=cloud_function_2", "--port=8080"]
+CMD ["functions-framework", "--target=cloudFunction2", "--port=8080"]
