@@ -1,7 +1,0 @@
-{
-    "memory": "512Mi",
-    "cpu": "1",
-    "timeout": "300s",
-    "runtime": "nodejs20"
-  }
-  

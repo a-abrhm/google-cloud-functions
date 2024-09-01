@@ -16,6 +16,7 @@ env:
   REGION: 'europe-west2' # TODO: update to your region
   # WORKLOAD_IDENTITY_PROVIDER: 'projects/538933477149/locations/global/workloadIdentityPools/github/providers/my-repo' # TODO: update to your workload identity provider
   GAR_REPO: 'cloud-functions' # TODO: update to your artifact registry repository name
+  SERVICE_ACCOUNT_EMAIL: 'cloud-run-deploy@copper-oven-434008-v1.iam.gserviceaccount.com'
 
 jobs:
   find_changed_functions:
@@ -60,10 +61,16 @@ jobs:
           sparse-checkout: |
             cloud_functions/${{ matrix.service }}
 
-      - name: 'List Files in Directory'
+      - name: 'Load Function Config'
+        id: 'load-config'
         run: |
-          echo "Listing files in the build context:"
-          ls -la cloud_functions/${{ matrix.service }}
+          CONFIG=$(jq -r '.' cloud_functions/${{ matrix.service }}/config.json)
+          echo "cpu=$(echo $CONFIG | jq -r '.cpu')" >> $GITHUB_ENV
+          echo "memory=$(echo $CONFIG | jq -r '.memory')" >> $GITHUB_ENV
+          echo "timeout=$(echo $CONFIG | jq -r '.timeout')" >> $GITHUB_ENV
+          echo "allow_unauthenticated=$(echo $CONFIG | jq -r '.allowUnauthenticated')" >> $GITHUB_ENV
+          echo "execution_environment=$(echo $CONFIG | jq -r '.executionEnvironment')" >> $GITHUB_ENV
+          echo "service_account=$(echo $CONFIG | jq -r '.serviceAccount')" >> $GITHUB_ENV
 
       # Configure Workload Identity Federation and generate an access token.
       #
@@ -103,7 +110,13 @@ jobs:
           region: '${{ env.REGION }}'
           # NOTE: If using a pre-built image, update the image name below:
           image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}/${{ matrix.service }}:${{ github.sha }}'
-          flags: '--cpu=1 --memory=2G --timeout=3600 --allow-unauthenticated --execution-environment=gen2 --service-account=cloud-run-deploy@copper-oven-434008-v1.iam.gserviceaccount.com'
+          flags: >
+            --cpu=${{ env.cpu }}
+            --memory=${{ env.memory }}
+            --timeout=$${{ env.timeout }}
+            ${{ env.allow_unauthenticated == 'true' && echo '--allow-unauthenticated' || echo '' }}
+            --execution-environment=${{ env.execution_environment }}
+            --service-account=${{ env.SERVICE_ACCOUNT_EMAIL }}
       
       - name: 'Show Deployed Service URL'
         run: |
