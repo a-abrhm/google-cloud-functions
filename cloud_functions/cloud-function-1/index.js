@@ -3,7 +3,7 @@ const { Firestore } = require('@google-cloud/firestore');
 
 const firestore = new Firestore();
 
-functions.http('cloudFunction1', async (req, res) => {
+functions.http('cloud-function-1', async (req, res) => {
     console.log(`Starting cloudFunction1 ja.`);
 
     // get the region record
