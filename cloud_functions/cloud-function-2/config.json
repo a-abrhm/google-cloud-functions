@@ -2,7 +2,7 @@
     "memory": "1Gi",
     "cpu": "2",
     "timeout": "600",
-    "allowUnauthenticated": false,
+    "allowUnauthenticated": true,
     "executionEnvironment": "gen2"
   }
   
