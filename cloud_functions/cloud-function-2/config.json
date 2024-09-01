@@ -1,6 +1,6 @@
 {
-    "memory": "256M",
-    "cpu": "0.583",
+    "memory": "1Gi",
+    "cpu": "2",
     "timeout": "600",
     "allowUnauthenticated": false,
     "executionEnvironment": "gen2"
